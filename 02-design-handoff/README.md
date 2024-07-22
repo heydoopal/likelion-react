@@ -13,6 +13,8 @@
 
 #### 수행 과정 기록
 
+![](https://velog.velcdn.com/images/zidoopal/post/c0168bd8-5a83-49b6-9e7a-dc27b1f1b9e9/image.png)
+
 - [x] 파일 세팅
 
   - 폴더구조 <br>
