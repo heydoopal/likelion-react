@@ -32,14 +32,13 @@ li {
   padding: 12px;
   background-color: #141415;
   gap: 20px;
+  width: 320px;
 }
 
 .list-item span {
+  width: 100%;
   color: #fff;
-  min-width: 240px;
-  max-width: 430px;
   font-size: 20px;
-  flex: 1 0 0;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 120%;
