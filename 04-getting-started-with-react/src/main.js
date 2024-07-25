@@ -1,19 +1,56 @@
-// Virtual DOM
-// 가상 문서 객체 모델
-// 실제 DOM을 추상화(단순화)
+// 실습 (Practice)
+import { createElement } from './lib/virtual/index.js'; // like React
+import { createRoot } from './lib/virtual-dom/index.js'; // like React DOM
 
-import { createElement } from './lib/virtual/index.js';
+// Data
+const listData = {
+  items: [
+    { id: '1', title: 'Climatology' },
+    { id: '2', title: 'History of Architecture' },
+  ],
+};
 
-// 실제 DOM 구성 (엘리먼트 트리)
-// 웹 API를 사용해 문서 객체(Document Object) 생성
-// <figure> 요소를 생성하고 싶어요.
-const figureElement = document.createElement('figure');
+const listItems = listData.items.map(({ id, title }) => {
+  // 가상 요소 반환
+  const itemElement = createElement(
+    'li',
+    { className: 'item' },
+    createElement('img', {
+      src: `/architectures/architecture-${id}.jpg`,
+      alt: '',
+    }),
+    createElement('span', { className: 'content' }, title),
+    createElement(
+      'button',
+      {
+        type: 'button',
+        title: '아이템 이동 (위/아래 화살표 키 활용)',
+      },
+      createElement('img', {
+        src: '/icons/handle.svg',
+        alt: '아이템 이동 (위/아래 화살표 키 활용)',
+      })
+    )
+  );
+  return itemElement;
+});
 
-const figcaptionElement = document.createElement('figcaption');
-figureElement.append(figcaptionElement);
+console.log(listItems);
 
-console.dir(figureElement);
+// TODO: <ul class="architectures" lang="en"></ul> 가상 요소 생성
+// API : createElement(type, props, ...children)
+const list = createElement(
+  // type
+  'ul',
+  // props
+  { className: 'architectures', lang: 'en' },
+  // ...children (child1, child2, ..., childN)
+  // <li class="item"></li> 가상 요소 삽입(추가)
+  ...listItems
+);
 
-// 가상(추상화된, 단순화된) 요소(엘리먼트) 생성
-const figureVElement = createElement('figure');
-// console.dir(figureVElement);
+// 가상 DOM (실제 DOM 흉내: 단순화)
+// console.log(list);
+const root = createRoot(document.getElementById('virtual-dom'));
+
+root.render(list);
