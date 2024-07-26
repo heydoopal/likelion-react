@@ -7,8 +7,22 @@ function AvatarListPage() {
     {
       className: 'AvatarList',
     },
-    h('li', null, h(Avatar, { name: '야무', photo: 'man-02.jpg' })),
-    h('li', null, h(Avatar, { name: '범쌤', photo: 'man-04.jpg' }))
+    h(
+      'li',
+      null,
+      h(Avatar, { name: '야무', photo: 'man-02.jpg', status: 'online' })
+    ),
+    h(
+      'li',
+      null,
+      h(Avatar, { name: '범쌤', photo: 'man-04.jpg', status: 'away' })
+    ),
+    h(
+      'li',
+      null,
+      h(Avatar, { name: '주원', photo: 'woman-04.jpg', status: 'dont-disturb' })
+    ),
+    h('li', null, h(Avatar, { name: '정민', photo: 'woman-01.jpg' }))
   );
 }
 
