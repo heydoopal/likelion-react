@@ -10,5 +10,4 @@ createRoot(domNode).render(
   <StrictMode>
     <App />
   </StrictMode>
-  
 );
