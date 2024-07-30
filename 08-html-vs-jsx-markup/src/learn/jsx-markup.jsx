@@ -20,7 +20,7 @@ function JSX_Markup() {
     <dl className="descriptionList">
       {/* {React.createElement(DataBinding, { statusMessages: statusMessages })} */}
       <DataBinding statusMessages={statusMessages} />
-      <ConditionalRendering imageType={imageType.length} />
+      <ConditionalRendering imageType={imageType} />
       <ConditionalDisplay />
       <RenderLists />
     </dl>
