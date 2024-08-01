@@ -1,6 +1,26 @@
-import { array } from '../utils/prop-types';
+// JSX Runtime Mode [CLASSIC] 직접 주입
+// import React from 'react';
+// JSX => React.createElement(type, props, ...children);
 
-function RenderLists({ items /* string[], Array<string> */ }) {
+// JSX Runtime Mode [AUTOMATIC] 자동 주입
+// import { jsx } from 'react/jsx-runtime';
+// JSX => jsx(type, props);
+
+// React.Fragment 컴포넌트 사용이 필요할 때
+// 자동 주입이 없음, 그래서 직접 주입 필요
+// import { Fragment } from 'react';
+// <Fragment> 컴포넌트 사용 가능
+import { Fragment } from 'react';
+import { array, exact, string } from 'prop-types';
+
+// console.log(PropTypes);
+
+function RenderLists({
+  reactLibrary,
+  items /* { id: string, message: string }[] */,
+}) {
+  // console.log(reactLibrary);
+
   // 함수 내부에 리스트 렌더링 코드를 작성해보세요.
   // react.d.ts
   // { @@typeof: 'Symbol(react.element)', ... }
@@ -39,18 +59,48 @@ function RenderLists({ items /* string[], Array<string> */ }) {
   let demoListUsingStatement = [];
 
   for (let item of items) {
-    demoListUsingStatement.push(<li key={item.toString()}>{item}</li>);
+    demoListUsingStatement.push(<li key={item.id}>{item.message}</li>);
   }
 
   // 식
-  const demoList = items.map((item, index) => {
-    return <li key={index.toString()}>{item}</li>;
+  const demoList = items.map((item) => {
+    return <li key={item.id}>{item.message}</li>;
   });
 
   const renderDemoList = () =>
-    items.map((item, index) => {
-      return <li key={index.toString()}>{item}</li>;
+    items.map(({ id, message }) => {
+      return <li key={id}>{message}</li>;
     });
+
+  // JSX 클린 코드를 위해 => 함수 몸체에 함수 정의 후 반환 값 활용
+  const renderDefinitionList = (objectData) => {
+    const definitionItems = Object.entries(objectData).map(([key, value]) => {
+      // key, value => JSX (Markup 생성)
+      // <React.Fragment></React.Fragment>
+      // <></>
+      // - React.Fragment 컴포넌트 & 리스트 렌더링
+      // - Fragment 컴포넌트에 key 설정 필요
+      // - 그러므로 <></> 표기법은 사용 X
+      return (
+        <Fragment key={key}>
+          <dt>{key}</dt>
+          <dd>{value}</dd>
+        </Fragment>
+      );
+    });
+
+    {
+      /* 객체 데이터를 순환해 설명 목록으로 리스트 렌더링 합니다. */
+    }
+    {
+      /* JavaScript에서 객체 순환하려면?
+        - [1] for ~ in 문 순환 -> 배열 객체 정의해서 리스트 렌더링 (문이기 때문에 함수 몸체에서 사용해야 함)
+        - [2] Object.entries() 메서드 활용 (식이므로 JSX 안에서 사용 가능)
+        - [3] JSX 클린 코드를 위해 함수 컴포넌트 몸체에 함수를 정의하여 반환 값 활용
+    */
+    }
+    return <dl className="reactLibrary">{definitionItems}</dl>;
+  };
 
   return (
     <>
@@ -58,8 +108,8 @@ function RenderLists({ items /* string[], Array<string> */ }) {
       <dd>
         {/* 직접 포함 */}
         <ul>
-          {items.map((item, index) => {
-            return <li key={index.toString()}>{item}</li>;
+          {items.map(({ id, message }) => {
+            return <li key={id}>{message}</li>;
           })}
         </ul>
         {/* 문에서 처리된 결과 값을 할당받은 지역 변수 참조 */}
@@ -76,7 +126,7 @@ function RenderLists({ items /* string[], Array<string> */ }) {
         {/* 인라인 코드 로직 삽입 (식에서 사용 가능, 다만 문 제외) */}
         <ul>
           {items.map((item) => (
-            <li key={item.toString()}>{item}</li>
+            <li key={item.id}>{item.message}</li>
           ))}
         </ul>
       </dd>
@@ -86,8 +136,8 @@ function RenderLists({ items /* string[], Array<string> */ }) {
         {/* <ul className="renderList">{reversedList}</ul> */}
 
         {/* 인라인 코드 로직 삽입 (식에서 사용 가능, 다만 문 제외) */}
-        {items.toReversed().map((item) => (
-          <li key={item.toString()}>{item}</li>
+        {items.toReversed().map((item, index) => (
+          <li key={item?.id ?? index}>{item.message}</li>
         ))}
       </dd>
       <dd>
@@ -95,9 +145,7 @@ function RenderLists({ items /* string[], Array<string> */ }) {
           React 라이브러리(reactLibrary) 객체의 키, 값을 <q>설명 목록</q>으로
           렌더링합니다.
         </p>
-        <dl className="reactLibrary">
-          {/* 여기서 설명 목록으로 리스트 렌더링 합니다. */}
-        </dl>
+        {renderDefinitionList(reactLibrary)}
       </dd>
     </>
   );
@@ -108,4 +156,12 @@ export default RenderLists;
 RenderLists.propTypes = {
   // items: oneOf(statusMessages)
   items: array, // [권장] arrayOf(string) | arrayOf(number)
+
+  reactLibrary: exact({
+    name: string,
+    author: string,
+    writtenIn: string,
+    type: string,
+    license: string,
+  }), // [권장] shape()
 };
