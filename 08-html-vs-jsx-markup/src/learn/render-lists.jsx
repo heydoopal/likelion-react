@@ -1,17 +1,20 @@
-import { array } from "../utils/prop-types";
+import { array } from '../utils/prop-types';
 
-function RenderLists({ items/* string[], Array<string> */ }) {
-  
+function RenderLists({ items /* string[], Array<string> */ }) {
   // 함수 내부에 리스트 렌더링 코드를 작성해보세요.
+  // react.d.ts
+  // { @@typeof: 'Symbol(react.element)', ... }
+  // JSDOC
+  /**@type{() => React.ReactElement} */
   const renderList = () => {
     // 리스트 렌더링 결과 반환
     // - [ ] Array.prototype.forEach?
     // - [x] Array.prototype.map?
-    return items.map(item/* string */ => {
-      console.log(item);
+    return items.map((item) /* string */ => {
+      // console.log(item);
       // JSX(React Element) Markup
       return <li key={item}>{item}</li>;
-    })
+    });
   };
 
   return (
@@ -40,19 +43,7 @@ function RenderLists({ items/* string[], Array<string> */ }) {
 
 export default RenderLists;
 
-
 RenderLists.propTypes = {
-  // D.R.Y
-  // Reusability
-  // Mechanism
-  // - [x] Function
-  // - [ ] Class
-  // NEEDS
-  // Library (Utilities)
-  // items(props, propName, componentName) {
-  //   const propValue = props[propName];
-  //   const propType = typeOf(propValue);
-    
-  // }
-  items: array
-}
+  // items: oneOf(statusMessages)
+  items: array, // [권장] arrayOf(string) | arrayOf(number)
+};
