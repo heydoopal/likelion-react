@@ -1,17 +1,12 @@
-/* eslint-disable react/no-unescaped-entities */
-
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useImmer } from 'use-immer';
 import { exact, string } from 'prop-types';
 import S from './DataFetching.module.css';
 
 const ENDPOINT = '//yamoo9.pockethost.io/api/collections/olive_oil/records';
 
 function DataFetching() {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState(null);
-  // const [data, setData] = useState(null);
-
-  const [state, setState] = useState({
+  const [state, setState] = useImmer({
     isLoading: false,
     error: null,
     data: null,
@@ -20,20 +15,9 @@ function DataFetching() {
   useEffect(() => {
     const abortController = new AbortController();
 
-    // API 1
-    // setState(nextState);
-    // setState({ ...state, key: value });
-
-    // setIsLoading(true);
-
-    // API 2
-    // setState((previousState) => nextState);
-    // setState((prevState) => ({ ...prevState, key: value }));
-
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: true,
-    }));
+    setState((draft) => {
+      draft.isLoading = true;
+    });
 
     const fetchOliveOil = async () => {
       try {
@@ -47,34 +31,16 @@ function DataFetching() {
           throw new Error(responseData.message);
         }
 
-        // setData(responseData);
-        // setIsLoading(false);
-        // setState({
-        //   ...state,
-        //   data: responseData,
-        //   isLoading: false,
-        // });
-
-        setState((prevState) => ({
-          ...prevState,
-          data: responseData,
-          isLoading: false,
-        }));
+        setState((draft) => {
+          draft.data = responseData;
+          draft.isLoading = false;
+        });
       } catch (error) {
         if (!(error instanceof DOMException)) {
-          // setError(error);
-          // setIsLoading(false);
-          // setState({
-          //   ...state,
-          //   error,
-          //   isLoading: false,
-          // });
-
-          setState((prevState) => ({
-            ...prevState,
-            error,
-            isLoading: false,
-          }));
+          setState((draft) => {
+            draft.error = error;
+            draft.isLoading = false;
+          });
         }
       }
     };
@@ -84,7 +50,7 @@ function DataFetching() {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [setState]);
 
   if (state.isLoading) {
     return <LoadingMessage />;
@@ -121,7 +87,7 @@ function PrintError({ error }) {
   return (
     <p role="alert">
       오류 발생!{' '}
-      <span style={{ fontWeight: 500, color: 'red' }}>"{error.message}"</span>
+      <span style={{ fontWeight: 500, color: 'red' }}>{error.message}</span>
     </p>
   );
 }
